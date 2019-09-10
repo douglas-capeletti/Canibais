@@ -6,21 +6,21 @@ public class Main {
 
         int vitimas = Integer.parseInt(args[0]);
 
-        MutableTable table = new MutableTable(vitimas);
-        Semaphore podeComer = new Semaphore(1);
-        Semaphore pedirMais = new Semaphore(0);
-        Semaphore temComida = new Semaphore(1);
+        MutableTable mesa = new MutableTable(vitimas);
+        Semaphore semaforo_mesa = new Semaphore(1);
+        SemaforoTable pre_mesa = new SemaforoTable(mesa, semaforo_mesa);
 
+        Cozinheiro cozinheiro = new Cozinheiro(mesa, semaforo_mesa);
 
-        Thread canibal_one = new Thread(new Canibal(table, podeComer, pedirMais, temComida));
-        canibal_one.start();
+        Thread cozinheiro_thread = new Thread(cozinheiro);
 
-        Thread canibal_two = new Thread(new Canibal(table, podeComer, pedirMais, temComida));
-        canibal_two.start();
+        Semaphore semaforo_canibais = new Semaphore(1);
 
-        Thread canibal_three = new Thread(new Canibal(table, podeComer, pedirMais, temComida));
-        canibal_three.start();
+        Thread canibal_1 = new Thread(new Canibal(pre_mesa, semaforo_canibais));
+        Thread canibal_2 = new Thread(new Canibal(pre_mesa, semaforo_canibais));
+        Thread canibal_3 = new Thread(new Canibal(pre_mesa, semaforo_canibais));
 
+        cozinheiro.setKeep_trying();
 
     }
 }

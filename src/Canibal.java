@@ -2,29 +2,22 @@ import java.util.concurrent.Semaphore;
 
 public class Canibal implements Runnable {
 
-    private MutableTable table;
-    private Semaphore poderComer;
-    private Semaphore pedirMais;
+    private Semaphore semaforo_canibais;
+    private SemaforoTable mesa;
 
-    public Canibal(MutableTable table, Semaphore poderComer, Semaphore pedirMais) {
-        this.table = table;
-        this.poderComer = poderComer;
-        this.pedirMais = pedirMais;
+    Canibal(SemaforoTable mesa, Semaphore semaforo_canibais) {
+        this.mesa = mesa;
+        this.semaforo_canibais = semaforo_canibais;
     }
 
     @Override
     public void run() {
         try{
-            poderComer.acquire();
+            semaforo_canibais.acquire();
 
-            if(table.temComida()){
-                table.comerPessoas();
-            } else {
-                pedirMais.release();
+            mesa.tentarComer();
 
-            }
-
-            poderComer.release();
+            semaforo_canibais.release();
         }catch (InterruptedException e){
             e.printStackTrace();
         }

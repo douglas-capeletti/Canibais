@@ -1,26 +1,24 @@
 
 
-public class MutableTable {
+class MutableTable {
 
-    private int pessoas = 0;
+    private int maxPessoas;
+    private int pessoas;
 
-    public MutableTable(int pessoas) {
+    MutableTable(int pessoas) {
         this.pessoas = pessoas;
+        this.maxPessoas = pessoas;
     }
 
-    public void comerPessoas() {
-        pessoas = pessoas -1;
+    void comerPessoas() {
+        this.pessoas -= 1;
     }
 
-    public int qtdPessoas() {
-        return pessoas;
+    void servirPessoas(){
+        this.pessoas = this.maxPessoas;
     }
 
-    public void servirPessoas(int p){
-        pessoas += p;
-    }
-
-    public boolean temComida(){
-        return pessoas > 0;
+    boolean temComida(){
+        return this.pessoas > 0;
     }
 }
