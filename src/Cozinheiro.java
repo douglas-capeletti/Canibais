@@ -21,8 +21,11 @@ public class Cozinheiro implements Runnable {
         try {
             while(this.keep_trying) {
                 semaforo_mesa.acquire();
+                System.out.println("Pegou a thread");
                 mesa.servirPessoas();
+                System.out.println("Serviu");
                 semaforo_mesa.release();
+                System.out.println("Liberou a thread");
             }
 
         } catch (InterruptedException e) {
