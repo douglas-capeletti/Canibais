@@ -1,38 +1,43 @@
-import java.util.concurrent.Semaphore;
 
 public class Cozinheiro implements Runnable {
 
     private MutableTable mesa;
-    private Semaphore semaforo_mesa;
+    private volatile boolean c1;
+    private volatile boolean c2;
+    private volatile int turn;
     private volatile boolean keep_trying;
 
-    Cozinheiro(MutableTable mesa, Semaphore semaforo_mesa) {
+    Cozinheiro(MutableTable mesa, boolean c1, boolean c2, int turn) {
         this.mesa = mesa;
-        this.semaforo_mesa = semaforo_mesa;
+        this.c1 = c1;
+        this.c2 = c2;
+        this.turn = turn;
         this.keep_trying = true;
     }
 
     void setKeep_trying() {
-
-        synchronized (this) {
-            this.keep_trying = false;
-        }
+        this.keep_trying = false;
     }
 
     @Override
     public void run() {
-        try {
-            while(this.keep_trying) {
-                semaforo_mesa.acquire();
-                System.out.println("Pegou a thread");
-                mesa.servirPessoas();
-                System.out.println("Serviu");
-                semaforo_mesa.release();
-                System.out.println("Liberou a thread");
-            }
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while(this.keep_trying) {
+            System.out.println("Pegou a thread");
+            this.acquire();
+            mesa.servirPessoas();
+            this.release();
+            System.out.println("Serviu");
+            System.out.println("Liberou a thread");
         }
+    }
+
+    void acquire(){
+        this.c2 = true;
+        this.turn = 1;
+        while (this.c1 && this.turn == 1) {};
+    }
+
+    void release(){
+        this.c2 = false;
     }
 }
