@@ -42,8 +42,8 @@ public class Main {
         canibal_5.join();
         canibal_6.join();
         cozinheiro.setKeep_trying();
+        semaforo_mesa.release();
         cozinheiro_thread.join();
-        System.out.println("Cozinheiro morreu");
 
     }
 }

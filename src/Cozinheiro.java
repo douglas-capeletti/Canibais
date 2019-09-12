@@ -4,7 +4,7 @@ public class Cozinheiro implements Runnable {
 
     private MutableTable mesa;
     private Semaphore semaforo_mesa;
-    private boolean keep_trying;
+    private volatile boolean keep_trying;
 
     Cozinheiro(MutableTable mesa, Semaphore semaforo_mesa) {
         this.mesa = mesa;
@@ -13,7 +13,10 @@ public class Cozinheiro implements Runnable {
     }
 
     void setKeep_trying() {
-        this.keep_trying = false;
+
+        synchronized (this) {
+            this.keep_trying = false;
+        }
     }
 
     @Override
