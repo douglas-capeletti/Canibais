@@ -2,9 +2,12 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Main {
+    static volatile boolean[] flag = new boolean[2];
+    static volatile int turn;
+    static volatile int i=0;
+    static volatile int j=1;
 
     public static void main(String[] args) throws InterruptedException {
-
         if (args.length != 2){
             System.out.println("Numero incorreto de parametros");
             return;
@@ -13,10 +16,9 @@ public class Main {
         int quant_canibais = Integer.parseInt(args[1]);
 
         MutableTable mesa = new MutableTable(vitimas);
-        Semaphore semaforo_mesa = new Semaphore(1);
-        SemaforoTable pre_mesa = new SemaforoTable(mesa, semaforo_mesa);
+        SemaforoTable pre_mesa = new SemaforoTable(mesa, flag, turn, i, j);
 
-        Cozinheiro cozinheiro = new Cozinheiro(mesa, semaforo_mesa);
+        Cozinheiro cozinheiro = new Cozinheiro(mesa, flag, turn, i, j);
         Thread cozinheiro_thread = new Thread(cozinheiro);
         cozinheiro_thread.start();
 
@@ -36,7 +38,7 @@ public class Main {
         }
         
         cozinheiro.setKeep_trying();
-        semaforo_mesa.release();
+        cozinheiro.setTurn();
         cozinheiro_thread.join();
 
     }
